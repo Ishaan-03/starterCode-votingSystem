@@ -1,0 +1,27 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Poll model representing a poll with multiple options
+model Poll {
+  id       String   @id @default(uuid()) // Unique identifier for the poll
+  questions String   // The question being asked in the poll
+  options  Option[] // Relation to the options for this poll
+}
+
+// Option model representing an option within a poll
+model Option {
+  id      String  @id @default(uuid()) // Unique identifier for the option
+  text    String  // The text of the option
+  votes   Int     @default(0) // Number of votes this option has received
+  pollid  String  // Foreign key referencing the associated poll
+  poll    Poll    @relation(fields: [pollid], references: [id]) // Relation to Poll
+}
